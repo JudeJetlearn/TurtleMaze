@@ -45,6 +45,7 @@ player.speed(0)
 player.penup()
 
 blocks = []
+ending = []
 
 def MazeMaker():
     for y in range(len(Maze)):
@@ -61,44 +62,104 @@ def MazeMaker():
                 block.goto(screenX,screenY)
                 blocks.append(block)
             if charater == "F":
-                block = turtle.Turtle()
-                block.shape("circle")
-                block.color("green")
-                block.speed(0)
-                block.penup()
-                block.goto(screenX,screenY)
+                end = turtle.Turtle()
+                end.shape("circle")
+                end.color("green")
+                end.speed(0)
+                end.penup()
+                end.goto(screenX,screenY)
+                ending.append(end)
 
-PlayerX = player.xcor()
-PlayerY = player.ycor()
+GameOver = False
+StartingTime = time.time()
+
+def EndingColide():
+    global GameOver
+    PlayerX = player.xcor()
+    PlayerY = player.ycor()
+
+    for i in range(len(ending)):
+        EndX = ending[i].xcor()
+        EndY = ending[i].ycor()
+
+        if PlayerX == EndX and PlayerY == EndY :
+            GameOver = True
+        elif PlayerX != EndX or PlayerY != EndY :
+            GameOver = False
+
+    if GameOver == True:
+        screen.bye()
+        EndingTime = time.time()
+        Duration = EndingTime - StartingTime
+        Duration = round(Duration)
+        print("Welldone! You have solved the maze.")
+        print(f"Time taken: {Duration} seconds.")
 
 def Player_Up():
     PlayerX = player.xcor()
-    PlayerY = player.ycor()+24
+    PlayerY = player.ycor() + 24
     move = True
     
     for i in range(len(blocks)):
+        BlockX = blocks[i].xcor()
         BlockY = blocks[i].ycor()
-        if PlayerY == BlockY:
+        if PlayerX == BlockX and PlayerY == BlockY :
             move = False
+
     if move == True:
         player.goto(PlayerX,PlayerY)
+        EndingColide()
 
 def Player_Down():
-    PlayerY = player.ycor()
-    player.goto(PlayerX,PlayerY-24)
+    PlayerX = player.xcor()
+    PlayerY = player.ycor() - 24
+    move = True
+    
+    for i in range(len(blocks)):
+        BlockX = blocks[i].xcor()
+        BlockY = blocks[i].ycor()
+        if PlayerX == BlockX and PlayerY == BlockY :
+            move = False
+
+    if move == True:
+        player.goto(PlayerX,PlayerY)
+        EndingColide()
+
 def Player_Right():
-    PlayerX = player.xcor()
-    player.goto(PlayerX+24,PlayerY)
+    PlayerX = player.xcor() + 24
+    PlayerY = player.ycor()
+    move = True
+    
+    for i in range(len(blocks)):
+        BlockX = blocks[i].xcor()
+        BlockY = blocks[i].ycor()
+        if PlayerX == BlockX and PlayerY == BlockY :
+            move = False
+
+    if move == True:
+        player.goto(PlayerX,PlayerY)
+        EndingColide()
+    
 def Player_Left():
-    PlayerX = player.xcor()
-    player.goto(PlayerX-24,PlayerY)
+    PlayerX = player.xcor() - 24
+    PlayerY = player.ycor()
+    move = True
+        
+    for i in range(len(blocks)):
+        BlockX = blocks[i].xcor()
+        BlockY = blocks[i].ycor()
+        if PlayerX == BlockX and PlayerY == BlockY :
+            move = False
+            
+    if move == True:
+        player.goto(PlayerX,PlayerY)
+        EndingColide()
 
 screen.listen()
 screen.onkey(Player_Up,"Up")
 screen.onkey(Player_Down,"Down")
 screen.onkey(Player_Right,"Right")
 screen.onkey(Player_Left,"Left")
-
 
 player.goto(-201,201)
 MazeMaker()
